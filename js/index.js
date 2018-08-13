@@ -1,42 +1,59 @@
 $(function(){
-  showHide();
-  addPlayers(2, ["hussin", "mav"]);
-  displayGuesses();
 
+$(".game").hide();
+startGame();
+
+  function startGame() {
+    askPlayerAmount();
+    displayGuesses();
+
+  }
   function askPlayerAmount() {
+    var playerArray = [];
+    var numberOfPlayers;
     // when player enters the amount of Players
     $("#getPlayers").on("keydown", function(){
-      //if enter has been pressed
+      // if the form already has input fields for names
+      // and the player wants to readjust the player values
+      if ($(".playerName").length >= 0) {
+        // remove all the input fields for names
+          $(".playerName").remove();
+          $("#enterGameBtn").remove();
+      }
+      //if enter key has been pressed
       if (event.keyCode == 13){
         // create new input fields for player names
         for (var i = 1; i <= $("#getPlayers").val(); i++) {
-          $(".getPlayersForm").append("<input type='text' name='"+i+"' class='playerName' placeholder='player name"+ i +"'>");
+          // assign each input a class of playerName
+          $(".getPlayersForm").append("<input type='text' name='"+i+"' class='playerName' placeholder='player name "+ i +"'>");
         }
+        numberOfPlayers = $("#getPlayers").val();
+        $(".getPlayersForm").append("<button type='button' id='enterGameBtn' name='button'>Enter Game</button>");
+        //when the button is pressed
+        $("#enterGameBtn").click(function(){
+          // loop over all player names
+          $(".playerName").each(function(index){
+            // add them to an array
+             playerArray[index]= $(this).val();
+          })
+          addPlayers(numberOfPlayers, playerArray);
+        })
       }
-      $(".playerName").css({
-        border:"1px solid black",
-        display:"Block;"
-      })
-    })
-  }
-  // implement  dynamic show and hide function
-  function showHide() {
-    $(".game").hide();
+    });
   }
   // add function to populate the player section of the game
-  function addPlayers(num,arrayNames) {
-    var personName = "";
+  function addPlayers(num,playerNames) {
     // create player div
     for (var i = 0; i < num; i++) {
-      personName= arrayNames[i];
       // add div with person name to player columns
       $(".playerDisplay").append("<div class='player'></div>");
     }
     $(".player").each(function(index){
-      $(this).text(arrayNames[index]);
+      $(this).text(playerNames[index]);
     })
+    $(".mainMenu").hide();
+    $(".game").show();
   }
-
   // displays the guesse from the input above in the same column
   function displayGuesses() {
     $("#guess").on("keydown",function(event){
@@ -44,7 +61,12 @@ $(function(){
         $(".guesses").append("<p>"+ $("#guess").val() +"</p>");
       }
     })
-    $("form").on("submit",function(event){
+    // set the input box to the bottom of the page
+    $("#guess").css({
+      position:"relative",
+      bottom:"0"
+    })
+    $(".guessForm").on("submit",function(event){
       event.preventDefault();
     })
   }
