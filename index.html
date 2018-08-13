@@ -10,30 +10,28 @@
     <title>Sribble.IO</title>
   </head>
   <body>
-      <section class="container">
-        <section class="mainMenu">
-          <div class="row">
-            <div class="col-md-6 offset-md-3 Players">
-              <form class="getPlayersForm">
-                <input id="getPlayers" type="text" name="players" placeholder="How many players">
-              </form>
-            </div>
+    <section class="container">
+      <section class="mainMenu">
+        <div class="row">
+          <div class="col-md-12">
+            <form class="getPlayersForm">
+              <input id="getPlayers" type="text" name="players" placeholder="How many players">
+            </form>
           </div>
-        </section>
-        <section class="game">
+        </div>
+      </section>
+      <section class="game">
         <div class="row">
           <section class="col-md-3 playerDisplay">
-              1
           </section>
           <section class="col-md-6">
-            3
-              <canvas id="canvas" width="300" height="300"></canvas>
+            <canvas id="canvas" width="300" height="300"></canvas>
           </section>
           <section class="col-md-3">
             <div class="guesses">
             </div>
-            <form class="" method="">
-              <input  id="guess" type="text" name="guess" placeholder="enter your guess">
+            <form class="guessForm" method="">
+              <input id="guess" type="text" name="guess" placeholder="enter your guess">
             </form>
           </section>
         </div>
