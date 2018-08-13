@@ -1,12 +1,10 @@
 $(function(){
 
-$(".game").hide();
-startGame();
-
+  $(".game").hide();
+  startGame();
   function startGame() {
     askPlayerAmount();
     displayGuesses();
-
   }
   function askPlayerAmount() {
     var playerArray = [];
@@ -17,8 +15,8 @@ startGame();
       // and the player wants to readjust the player values
       if ($(".playerName").length >= 0) {
         // remove all the input fields for names
-          $(".playerName").remove();
-          $("#enterGameBtn").remove();
+        $(".playerName").remove();
+        $("#enterGameBtn").remove();
       }
       //if enter key has been pressed
       if (event.keyCode == 13){
@@ -34,7 +32,7 @@ startGame();
           // loop over all player names
           $(".playerName").each(function(index){
             // add them to an array
-             playerArray[index]= $(this).val();
+            playerArray[index]= $(this).val();
           })
           addPlayers(numberOfPlayers, playerArray);
         })
