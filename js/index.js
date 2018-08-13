@@ -26,12 +26,8 @@ $(function(){
   }
   // add function to populate the player section of the game
   function addPlayers(num,arrayNames) {
-    // personName is used to display the players name in a column
-    var personName = "";
     // create player div
     for (var i = 0; i < num; i++) {
-      // assigned the name from the array to personName
-      personName= arrayNames[i];
       // use the personName to a div inside the column for players
       $(".playerDisplay").append("<div class='player'></div>");
     }
@@ -39,7 +35,6 @@ $(function(){
       $(this).text(arrayNames[index]);
     })
   }
-
   // displays the guesses from the input above in the same column
   function displayGuesses() {
     $("#guess").on("keydown",function(event){
