@@ -1,5 +1,6 @@
 $(function(){
   showHide();
+  // calling the function to test it with 2 users only.
   addPlayers(2, ["hussin", "mav"]);
   displayGuesses();
 
