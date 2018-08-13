@@ -1,7 +1,7 @@
 # Sketch.IO
 
 
-##Requirements
+## Requirements
 * includes instruction on how to run the game.
 * includes instruction on how to play the game.
 * includes clear displays about the state of the game.
