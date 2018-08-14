@@ -1,10 +1,54 @@
 $(function(){
-
   $(".game").hide();
   startGame();
   function startGame() {
     askPlayerAmount();
     displayGuesses();
+    drawcanvas();
+  }
+
+  function drawcanvas() {
+    var canvas = $("#canvas")[0].getContext('2d');
+    // used to check if the mouse has been pressed or not
+    var isDrawing;
+    canvas.fillCircle = function(x, y, radius, fillColor) {
+      this.fillStyle = fillColor;
+      this.beginPath();
+      this.moveTo(x, y);
+      this.arc(x, y, radius, 0, Math.PI * 2, false);
+      this.fill();
+    };
+    // compares the canvas  
+    function getMousePos(canvas, e) {
+      var rect =  $("#canvas")[0].getBoundingClientRect();
+      return {x: e.clientX - rect.left, y: e.clientY - rect.top};
+    }
+    // if the mouse is pressed we draw
+    $("#canvas").mousedown(function(event){
+      isDrawing = true;
+    })
+    //draw from the press to the nd
+    $("#canvas").mousemove(function(event){
+      if (!isDrawing) {
+        return;
+      }
+      // get the mouse positon in relation to the canvas
+      var pos = getMousePos(canvas, event);
+      // assign x to the mouse
+      var x =  pos.x - 10;
+      // assign y to mouse
+      var y = pos.y - 10;
+      // set a radius of the drawn circles
+      var radius = 1;
+      // give it a colour
+      var fillColor = '#ff0000';
+      // call the function to draw
+      canvas.fillCircle(x, y, radius, fillColor);
+    })
+    // if the mouse is released we stop the draw
+    $("#canvas").mouseup(function(event){
+      isDrawing = false;
+    })
   }
   function askPlayerAmount() {
     var playerArray = [];
