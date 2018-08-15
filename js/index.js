@@ -129,11 +129,12 @@ $(function(){
       isDrawing = false;
     })
   }
-  // displays the guesse from the input above in the same column
+  // displays the guesses from the input above in the same column
   function displayGuesses() {
     $("#guess").on("keydown",function(event){
       if (event.keyCode == 13){
         $(".guesses").append("<p class='guessParagraph'>"+$("#guess").val()+"</p>");
+        // currently only using the first person on list in wait for sockets.
         compareGuess(leaderboard.getScores()[0]);
       }
     })
@@ -152,17 +153,20 @@ $(function(){
         if ($(".guessParagraph:last-child").text() == drawWord.getWord()) {
           // if correct assign the player 100 points
           Player.score += 100;
+          // if guess is correct assign green background
           $(".guessParagraph:last-child").css({
             backgroundColor: "green"
           })
           // call to updte the leaderboard
           updateScoreBoard(Player);
         }else{
+          // iff guess is wrong assign red background
           $(".guessParagraph:last-child").css({
             backgroundColor: "red"
           })
         }
       }
+  // update score board
   function updateScoreBoard(Player) {
     $("#"+Player.getName()+"").text(""+Player.getName()+ "|" + Player.getScore());
   }
