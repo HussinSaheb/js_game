@@ -1,15 +1,14 @@
 $(function(){
   var drawWord = new Word();
+  var turn;
   // hide the game div at start
   $(".game").hide();
+  askPlayerAmount();
   startGame();
   var leaderboard = new Leaderboard();
   // start a game
   function startGame() {
-    askPlayerAmount();
-    displayGuesses();
     displayWord();
-    drawCanvas();
   }
   // function to retrieve the values from inputs
   function askPlayerAmount() {
@@ -58,13 +57,27 @@ $(function(){
       var person =  new Player(playerNames[index], 0);
       // display in the window the players name.
       $(this).text(playerNames[index]);
+      // add an id of the name
+      $(this).attr('id',playerNames[index]);
       // add the new player to the leaderboard
       leaderboard.addEntry(person);
     })
     // call leaderboard to be displayed
     displayLeaderboard(leaderboard);
+    // two player turn
+    playerTurns(leaderboard.getScores());
     $(".mainMenu").hide();
     $(".game").show();
+  }
+  // Work out the logic of the turns
+  function playerTurns(array) {
+      if (array.length % 2 == 0) {
+        drawCanvas(true, array[0]);
+        displayGuesses(array[0]);
+      }else{
+        drawCanvas(true, array[1]);
+        displayGuesses(array[1]);
+      }
   }
   // display leaderboard on page
   function displayLeaderboard(leaderboard) {
@@ -86,56 +99,61 @@ $(function(){
     })
   }
   // function to show and deal with the canvas inputs
-  function drawCanvas() {
-    var canvas = $("#canvas")[0].getContext('2d');
-    // used to check if the mouse has been pressed or not
-    var isDrawing;
-    canvas.fillCircle = function(x, y, radius, fillColor) {
-      this.fillStyle = fillColor;
-      this.beginPath();
-      this.moveTo(x, y);
-      this.arc(x, y, radius, 0, Math.PI * 2, false);
-      this.fill();
-    };
-    // compares the canvas
-    function getMousePos(canvas, e) {
-      var rect =  $("#canvas")[0].getBoundingClientRect();
-      return {x: e.clientX - rect.left, y: e.clientY - rect.top};
-    }
-    // if the mouse is pressed we draw
-    $("#canvas").mousedown(function(event){
-      isDrawing = true;
-    })
-    //draw from the press to the nd
-    $("#canvas").mousemove(function(event){
-      if (!isDrawing) {
-        return;
+  // set param turn to true if current players turns
+  // pass the player object if its their turn
+  function drawCanvas(turn, Player) {
+    if (turn=true) {
+      var canvas = $("#canvas")[0].getContext('2d');
+      // used to check if the mouse has been pressed or not
+      var isDrawing;
+      canvas.fillCircle = function(x, y, radius, fillColor) {
+        this.fillStyle = fillColor;
+        this.beginPath();
+        this.moveTo(x, y);
+        this.arc(x, y, radius, 0, Math.PI * 2, false);
+        this.fill();
+      };
+      // compares the canvas
+      function getMousePos(canvas, e) {
+        var rect =  $("#canvas")[0].getBoundingClientRect();
+        return {x: e.clientX - rect.left, y: e.clientY - rect.top};
       }
-      // get the mouse positon in relation to the canvas
-      var pos = getMousePos(canvas, event);
-      // assign x to the mouse
-      var x =  pos.x;
-      // assign y to mouse
-      var y = pos.y;
-      // set a radius of the drawn circles
-      var radius = 1;
-      // give it a colour
-      var fillColor = '#ff0000';
-      // call the function to draw
-      canvas.fillCircle(x, y, radius, fillColor);
-    })
-    // if the mouse is released we stop the draw
-    $("#canvas").mouseup(function(event){
-      isDrawing = false;
-    })
+      // if the mouse is pressed we draw
+      $("#canvas").mousedown(function(event){
+        isDrawing = true;
+      })
+      //draw from the press to the nd
+      $("#canvas").mousemove(function(event){
+        if (!isDrawing) {
+          return;
+        }
+        // get the mouse positon in relation to the canvas
+        var pos = getMousePos(canvas, event);
+        // assign x to the mouse
+        var x =  pos.x - 10;
+        // assign y to mouse
+        var y = pos.y - 10;
+        // set a radius of the drawn circles
+        var radius = 2;
+        // give it a colour
+        var fillColor = '#ff0000';
+        // call the function to draw
+        canvas.fillCircle(x, y, radius, fillColor);
+      })
+      // if the mouse is released we stop the draw
+      $("#canvas").mouseup(function(event){
+        isDrawing = false;
+      })
+    }
+     turn = false;
   }
   // displays the guesses from the input above in the same column
-  function displayGuesses() {
+  function displayGuesses(Player) {
     $("#guess").on("keydown",function(event){
       if (event.keyCode == 13){
         $(".guesses").append("<p class='guessParagraph'>"+$("#guess").val()+"</p>");
         // currently only using the first person on list in wait for sockets.
-        compareGuess(leaderboard.getScores()[0]);
+        compareGuess(Player);
       }
     })
     // set the input box to the bottom of the page
@@ -149,23 +167,23 @@ $(function(){
   }
   // compare a guess from a player and the word on screen
   function compareGuess(Player) {
-        // check if the word is the last one entered
-        if ($(".guessParagraph:last-child").text() == drawWord.getWord()) {
-          // if correct assign the player 100 points
-          Player.score += 100;
-          // if guess is correct assign green background
-          $(".guessParagraph:last-child").css({
-            backgroundColor: "green"
-          })
-          // call to updte the leaderboard
-          updateScoreBoard(Player);
-        }else{
-          // iff guess is wrong assign red background
-          $(".guessParagraph:last-child").css({
-            backgroundColor: "red"
-          })
-        }
-      }
+    // check if the word is the last one entered
+    if ($(".guessParagraph:last-child").text() == drawWord.getWord()) {
+      // if correct assign the player 100 points
+      Player.score += 100;
+      // if guess is correct assign green background
+      $(".guessParagraph:last-child").css({
+        backgroundColor: "green"
+      })
+      // call to updte the leaderboard
+      updateScoreBoard(Player);
+    }else{
+      // iff guess is wrong assign red background
+      $(".guessParagraph:last-child").css({
+        backgroundColor: "red"
+      })
+    }
+  }
   // update score board
   function updateScoreBoard(Player) {
     $("#"+Player.getName()+"").text(""+Player.getName()+ "|" + Player.getScore());
