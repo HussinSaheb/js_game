@@ -1,12 +1,13 @@
 $(function(){
   $(".game").hide();
   startGame();
+  var leaderboard = new Leaderboard();
   function startGame() {
     askPlayerAmount();
     displayGuesses();
+    displayWord();
     drawcanvas();
   }
-
   function drawcanvas() {
     var canvas = $("#canvas")[0].getContext('2d');
     // used to check if the mouse has been pressed or not
@@ -18,7 +19,7 @@ $(function(){
       this.arc(x, y, radius, 0, Math.PI * 2, false);
       this.fill();
     };
-    // compares the canvas  
+    // compares the canvas
     function getMousePos(canvas, e) {
       var rect =  $("#canvas")[0].getBoundingClientRect();
       return {x: e.clientX - rect.left, y: e.clientY - rect.top};
@@ -35,9 +36,9 @@ $(function(){
       // get the mouse positon in relation to the canvas
       var pos = getMousePos(canvas, event);
       // assign x to the mouse
-      var x =  pos.x - 10;
+      var x =  pos.x;
       // assign y to mouse
-      var y = pos.y - 10;
+      var y = pos.y;
       // set a radius of the drawn circles
       var radius = 1;
       // give it a colour
@@ -91,8 +92,16 @@ $(function(){
       $(".playerDisplay").append("<div class='player'></div>");
     }
     $(".player").each(function(index){
-      $(this).text(playerNames[index]);
+      //create a new player object
+      // add the players name and score
+      var person =  new Player(playerNames[index], 0);
+      // display in the window the players name and score
+      $(this).text(playerNames[index]  + "|" + person.getScore());
+      // add the new player to the leaderboard
+      leaderboard.addEntry(person);
     })
+
+    displayLeaderboard(leaderboard);
     $(".mainMenu").hide();
     $(".game").show();
   }
@@ -112,4 +121,43 @@ $(function(){
       event.preventDefault();
     })
   }
+  function displayLeaderboard(leaderboard) {
+    $(".leaderboard").append("<ul id='leaderboard'></ul>");
+    for (var i = 0; i < leaderboard.getScores().length; i++) {
+      $("#leaderboard").append("<li>"+leaderboard.getScores()[i].getName() +  "|"+leaderboard.getScores()[i].getScore()+"</li>")
+    }
+  }
+  function displayWord() {
+    // get word from the datamuse api using get restful
+    $.get("https://api.datamuse.com/words?ml=&max=999&topics=furniture", function(result){
+        $("#words").text(result[0].word);
+      })
+    }
+function Player(name, score) {
+  this.name = name;
+  this.score = score;
+  Player.prototype.getName = function () {
+    return this.name;
+  };
+  Player.prototype.getScore = function () {
+    return this.score;
+  };
+}
+function Leaderboard(){
+  this.scores = [];
+  Leaderboard.prototype.getScores = function () {
+    return this.scores
+  };
+  //change name as its confusing with the other function
+  Leaderboard.prototype.addEntry = function(Player) {
+    this.scores.push(Player);
+  }
+
+}
+
+
+
+
+
+
 })
