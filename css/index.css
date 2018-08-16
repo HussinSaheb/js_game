@@ -1,5 +1,5 @@
 
-getPlayersForm{
+.getPlayersForm{
   height: auto;
   border: 1px solid black;
   border-radius: 3px;
@@ -17,9 +17,13 @@ getPlayersForm{
 .guesses{
   border-radius: 3px;
   border: 1px solid black;
+  height: 300px;
 }
 .player{
   border: 1px solid black;
   border-radius: 3px;
   text-align: center;
+}
+.drawing{
+  background-color: orange;
 }

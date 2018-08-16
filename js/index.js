@@ -1,15 +1,63 @@
 $(function(){
   var drawWord = new Word();
-  var turn;
+  var guessed;
+  // get the current players
+  var playCount = 4;
   // hide the game div at start
   $(".game").hide();
+  // call the functon to gather player details
   askPlayerAmount();
-  startGame();
+  // initialise the leaderoard
   var leaderboard = new Leaderboard();
   // start a game
-  function startGame() {
-    displayWord();
-  }
+  function startGame(Leaderboard) {
+    var player;
+    switch (playCount) {
+      case 1:
+        player = Leaderboard.getScores()[1];
+        $("#PlayerTurn").text("Player two's turn to guess");
+        $(".player"+"#"+player.name+"").addClass("drawing");  
+        // call game function with the player object passed as argument.
+        game(player);
+        break;
+      case 2:
+        player = Leaderboard.getScores()[0];
+        $("#PlayerTurn").text("Player one's turn to guess")
+        $(".player"+"#"+player.name+"").addClass("drawing");
+        game(player);
+        break;
+      case 3:
+        player = Leaderboard.getScores()[1];
+        $("#PlayerTurn").text("Player two's turn to guess")
+        $(".player"+"#"+player.name+"").addClass("drawing");
+        game(player);
+        break;
+      case 4:
+        player = Leaderboard.getScores()[0];
+        $("#PlayerTurn").text("Player one's turn to guess")
+        $(".player"+"#"+player.name+"").addClass("drawing");
+        game(player);
+        break;
+      default:
+    }
+    function game(player) {
+      drawCanvas();
+      displayWord(true);
+      displayGuesses(player)
+      var counter = 0;
+      //stat timer to replace the word with underscores
+      var wordTimer = setInterval(function() {
+        counter++;
+        if (counter == 5) {
+          replaceWord();
+          // remove the timer
+          clearInterval(wordTimer);
+        }
+      }, 1000);
+      // if the correct word is guessed
+    }
+    $("#words").text("Game Finished");
+    }
   // function to retrieve the values from inputs
   function askPlayerAmount() {
     var playerArray = [];
@@ -61,23 +109,12 @@ $(function(){
       $(this).attr('id',playerNames[index]);
       // add the new player to the leaderboard
       leaderboard.addEntry(person);
-    })
+    });
     // call leaderboard to be displayed
     displayLeaderboard(leaderboard);
-    // two player turn
-    playerTurns(leaderboard.getScores());
+    startGame(leaderboard);
     $(".mainMenu").hide();
     $(".game").show();
-  }
-  // Work out the logic of the turns
-  function playerTurns(array) {
-      if (array.length % 2 == 0) {
-        drawCanvas(true, array[0]);
-        displayGuesses(array[0]);
-      }else{
-        drawCanvas(true, array[1]);
-        displayGuesses(array[1]);
-      }
   }
   // display leaderboard on page
   function displayLeaderboard(leaderboard) {
@@ -92,17 +129,26 @@ $(function(){
     $.get("https://api.datamuse.com/words?ml=&max=999&topics=furniture", function(result){
       // get a random number
       var number  = Math.floor(Math.random() * 30);
-      // set the number to pick one from 999 words
-      $("#words").text(result[number].word);
+      var theWord = result[number].word;
       // set the word to word object
       drawWord.setWord(result[number].word);
+      $("#words").text(theWord);
     })
+  }
+  // function to replace the word displayed with underscores to guess
+  function replaceWord() {
+    var theWord = $("#words").text();
+    var temp ="";
+    // loop over the word, replace the words letters with underscore
+    for (var i = 0; i < theWord.length; i++) {
+      temp += theWord[i].replace(theWord.charAt(i), "_ ");
+    }
+    $("#words").text(temp);
   }
   // function to show and deal with the canvas inputs
   // set param turn to true if current players turns
   // pass the player object if its their turn
-  function drawCanvas(turn, Player) {
-    if (turn=true) {
+  function drawCanvas() {
       var canvas = $("#canvas")[0].getContext('2d');
       // used to check if the mouse has been pressed or not
       var isDrawing;
@@ -144,8 +190,6 @@ $(function(){
       $("#canvas").mouseup(function(event){
         isDrawing = false;
       })
-    }
-     turn = false;
   }
   // displays the guesses from the input above in the same column
   function displayGuesses(Player) {
@@ -177,12 +221,21 @@ $(function(){
       })
       // call to updte the leaderboard
       updateScoreBoard(Player);
+      guessed = true;
+      $("#guess").unbind("keydown");
+      if (guessed) {
+        // reduce the playCount
+        playCount--;
+        startGame(leaderboard);
+      }
     }else{
       // iff guess is wrong assign red background
       $(".guessParagraph:last-child").css({
         backgroundColor: "red"
       })
+      guessed=false;
     }
+
   }
   // update score board
   function updateScoreBoard(Player) {
