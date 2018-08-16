@@ -50,7 +50,18 @@ $(function(){
           clearInterval(wordTimer);
         }
       }, 1000);
-      // if the correct word is guessed
+      // if no correct guesses
+      // and the time is past a minute
+      // then we end current turn and go to next players turn
+      var countTimer = setInterval(function() {
+        counter++;
+        if (counter == 60) {
+          playCount--;
+          startGame(Leaderboard);
+          // remove the timer
+          clearInterval(countTimer);
+        }
+      }, 1000);
     }
     $("#words").text("Game Finished");
     }
