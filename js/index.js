@@ -39,9 +39,9 @@ $(function(){
           $(".playerName").each(function(index){
             // add them to an array
             playerArray[index]= $(this).val();
-          })
+          });
           addPlayers(numberOfPlayers, playerArray);
-        })
+        });
       }
     });
   }
@@ -70,7 +70,7 @@ $(function(){
   function displayLeaderboard(leaderboard) {
     $(".leaderboard").append("<ul id='leaderboard'></ul>");
     for (var i = 0; i < leaderboard.getScores().length; i++) {
-      $("#leaderboard").append("<li id="+leaderboard.getScores()[i].getName()+">"+leaderboard.getScores()[i].getName() +  "|"+leaderboard.getScores()[i].getScore()+"</li>")
+      $("#leaderboard").append("<li id="+leaderboard.getScores()[i].getName()+">"+leaderboard.getScores()[i].getName() +  "|"+leaderboard.getScores()[i].getScore()+"</li>");
     }
   }
   // displays the word on page//sets the objct word
@@ -83,7 +83,7 @@ $(function(){
       $("#words").text(result[number].word);
       // set the word to word object
       drawWord.setWord(result[number].word);
-    })
+    });
   }
   // function to show and deal with the canvas inputs
   function drawCanvas() {
@@ -105,7 +105,7 @@ $(function(){
     // if the mouse is pressed we draw
     $("#canvas").mousedown(function(event){
       isDrawing = true;
-    })
+    });
     //draw from the press to the nd
     $("#canvas").mousemove(function(event){
       if (!isDrawing) {
@@ -123,11 +123,11 @@ $(function(){
       var fillColor = '#ff0000';
       // call the function to draw
       canvas.fillCircle(x, y, radius, fillColor);
-    })
+    });
     // if the mouse is released we stop the draw
     $("#canvas").mouseup(function(event){
       isDrawing = false;
-    })
+    });
   }
   // displays the guesses from the input above in the same column
   function displayGuesses() {
@@ -137,15 +137,15 @@ $(function(){
         // currently only using the first person on list in wait for sockets.
         compareGuess(leaderboard.getScores()[0]);
       }
-    })
+    });
     // set the input box to the bottom of the page
     $("#guess").css({
       position:"relative",
       bottom:"0"
-    })
+    });
     $(".guessForm").on("submit",function(event){
       event.preventDefault();
-    })
+    });
   }
   // compare a guess from a player and the word on screen
   function compareGuess(Player) {
@@ -156,7 +156,7 @@ $(function(){
           // if guess is correct assign green background
           $(".guessParagraph:last-child").css({
             backgroundColor: "green"
-          })
+          });
           // call to updte the leaderboard
           updateScoreBoard(Player);
         }else{
