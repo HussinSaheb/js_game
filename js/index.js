@@ -1,4 +1,6 @@
 $(function(){
+
+  scroll();
   var drawWord = new Word();
   var guessed;
   // get the current players
@@ -63,6 +65,8 @@ $(function(){
         }
       }, 1000);
     }
+    localStorage.setItem("name", Leaderboard.getScores()[0].name);
+    localStorage.setItem("name", Leaderboard.getScores()[1].name);
     $("#words").text("Game Finished");
     }
   // function to retrieve the values from inputs
@@ -157,6 +161,8 @@ $(function(){
   // pass the player object if its their turn
   function drawCanvas() {
       var canvas = $("#canvas")[0].getContext('2d');
+      // clears the canvas each time the draw canvas is called.
+      canvas.clearRect(0,0,$("#canvas")[0].width, $("#canvas")[0].height);
       // used to check if the mouse has been pressed or not
       var isDrawing;
       canvas.fillCircle = function(x, y, radius, fillColor) {
@@ -215,6 +221,17 @@ $(function(){
     $(".guessForm").on("submit",function(event){
       event.preventDefault();
     })
+  }
+  // add scroll animation to scroll to last item
+  function scroll() {
+    var i = 0;
+    var interval = setInterval(function () {
+      i += 4; // speed
+      $('.guesses').animate({ scrollTop: i }, 1);
+      if (i >= $('#guesses').prop('scrollHeight') - $('#guesses').height()) {
+        i = 0;
+      }
+    }, 100);
   }
   // compare a guess from a player and the word on screen
   function compareGuess(Player) {
