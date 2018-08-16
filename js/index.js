@@ -65,8 +65,8 @@ $(function(){
         }
       }, 1000);
     }
-    localStorage.setItem("name", Leaderboard.getScores()[0].name);
-    localStorage.setItem("name", Leaderboard.getScores()[1].name);
+    localStorage.setItem(Leaderboard.getScores()[0].name, Leaderboard.getScores()[0].score);
+    localStorage.setItem(Leaderboard.getScores()[1].name, Leaderboard.getScores()[1].score);
     $("#words").text("Game Finished");
     }
   // function to retrieve the values from inputs
