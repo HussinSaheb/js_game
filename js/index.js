@@ -16,26 +16,22 @@ $(function(){
       case 1:
         player = Leaderboard.getScores()[1];
         $("#PlayerTurn").text("Player two's turn to guess");
-        $(".player"+"#"+player.name+"").addClass("drawing");  
         // call game function with the player object passed as argument.
         game(player);
         break;
       case 2:
         player = Leaderboard.getScores()[0];
         $("#PlayerTurn").text("Player one's turn to guess")
-        $(".player"+"#"+player.name+"").addClass("drawing");
         game(player);
         break;
       case 3:
         player = Leaderboard.getScores()[1];
         $("#PlayerTurn").text("Player two's turn to guess")
-        $(".player"+"#"+player.name+"").addClass("drawing");
         game(player);
         break;
       case 4:
         player = Leaderboard.getScores()[0];
         $("#PlayerTurn").text("Player one's turn to guess")
-        $(".player"+"#"+player.name+"").addClass("drawing");
         game(player);
         break;
       default:
