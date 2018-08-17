@@ -254,7 +254,7 @@ $(function(){
         startGame(leaderboard);
       }
     }else{
-      // iff guess is wrong assign red background
+      // if guess is wrong assign red background
       $(".guessParagraph:last-child").css({
         backgroundColor: "red"
       })
