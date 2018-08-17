@@ -29,9 +29,6 @@ body{
   border-radius: 3px;
   text-align: center;
 }
-ul{
-  list-style-type: none;
-}
 #localLeader th, tr, td{
   border: 1px solid black;
   font-size: 32px;

@@ -1,21 +1,11 @@
 $(function(){
-  $("#localLeader").hide();
-  $(".instructions").hide();
+  displayLeaderboard();
   // display leaderboard on page
   function displayLeaderboard() {
-      for (var i = 0; i < localStorage.length; i++) {
-        $("#localLeader").append("<tr> <td>"+localStorage.key(i) +"</td><td>"+localStorage.getItem(localStorage.key(i))+"</td></tr>")
-      }
+    for (var i = 0; i < localStorage.length; i++) {
+      $("#localLeader").append("<tr> <td>"+localStorage.key(i) +"</td><td>"+localStorage.getItem(localStorage.key(i))+"</td></tr>")
+    }
   }
-  // add an onclick for the table generator
-  $("#scoreBoard").click(function(){
-    $("#localLeader").show();
-    displayLeaderboard();
-  });
-  // add onclick for the instrucitons to show
-  $("#instruction").click(function(){
-    $(".instructions").show();
-  });
   var drawWord = new Word();
   var guessed;
   // get the current players
@@ -31,26 +21,26 @@ $(function(){
     var player;
     switch (playCount) {
       case 1:
-        player = Leaderboard.getScores()[1];
-        $("#PlayerTurn").text("Player two's turn to guess");
-        // call game function with the player object passed as argument.
-        game(player);
-        break;
+      player = Leaderboard.getScores()[1];
+      $("#PlayerTurn").text("Player two's turn to guess");
+      // call game function with the player object passed as argument.
+      game(player);
+      break;
       case 2:
-        player = Leaderboard.getScores()[0];
-        $("#PlayerTurn").text("Player one's turn to guess")
-        game(player);
-        break;
+      player = Leaderboard.getScores()[0];
+      $("#PlayerTurn").text("Player one's turn to guess")
+      game(player);
+      break;
       case 3:
-        player = Leaderboard.getScores()[1];
-        $("#PlayerTurn").text("Player two's turn to guess")
-        game(player);
-        break;
+      player = Leaderboard.getScores()[1];
+      $("#PlayerTurn").text("Player two's turn to guess")
+      game(player);
+      break;
       case 4:
-        player = Leaderboard.getScores()[0];
-        $("#PlayerTurn").text("Player one's turn to guess")
-        game(player);
-        break;
+      player = Leaderboard.getScores()[0];
+      $("#PlayerTurn").text("Player one's turn to guess")
+      game(player);
+      break;
     }
     function game(player) {
       drawCanvas();
@@ -93,7 +83,9 @@ $(function(){
     }else{
       $("#words").text(""+ play2.name + " -  wins the game");
     }
-    }
+    //update the leaderboard as the scores update
+    displayLeaderboard();
+  }
   // function to retrieve the values from inputs
   function askPlayerAmount() {
     var playerArray = [];
@@ -178,49 +170,49 @@ $(function(){
   // set param turn to true if current players turns
   // pass the player object if its their turn
   function drawCanvas() {
-      var canvas = $("#canvas")[0].getContext('2d');
-      // clears the canvas each time the draw canvas is called.
-      canvas.clearRect(0,0,$("#canvas")[0].width, $("#canvas")[0].height);
-      // used to check if the mouse has been pressed or not
-      var isDrawing;
-      canvas.fillCircle = function(x, y, radius, fillColor) {
-        this.fillStyle = fillColor;
-        this.beginPath();
-        this.moveTo(x, y);
-        this.arc(x, y, radius, 0, Math.PI * 2, false);
-        this.fill();
-      };
-      // compares the canvas
-      function getMousePos(canvas, e) {
-        var rect =  $("#canvas")[0].getBoundingClientRect();
-        return {x: e.clientX - rect.left, y: e.clientY - rect.top};
+    var canvas = $("#canvas")[0].getContext('2d');
+    // clears the canvas each time the draw canvas is called.
+    canvas.clearRect(0,0,$("#canvas")[0].width, $("#canvas")[0].height);
+    // used to check if the mouse has been pressed or not
+    var isDrawing;
+    canvas.fillCircle = function(x, y, radius, fillColor) {
+      this.fillStyle = fillColor;
+      this.beginPath();
+      this.moveTo(x, y);
+      this.arc(x, y, radius, 0, Math.PI * 2, false);
+      this.fill();
+    };
+    // compares the canvas
+    function getMousePos(canvas, e) {
+      var rect =  $("#canvas")[0].getBoundingClientRect();
+      return {x: e.clientX - rect.left, y: e.clientY - rect.top};
+    }
+    // if the mouse is pressed we draw
+    $("#canvas").mousedown(function(event){
+      isDrawing = true;
+    })
+    //draw from the press to the nd
+    $("#canvas").mousemove(function(event){
+      if (!isDrawing) {
+        return;
       }
-      // if the mouse is pressed we draw
-      $("#canvas").mousedown(function(event){
-        isDrawing = true;
-      })
-      //draw from the press to the nd
-      $("#canvas").mousemove(function(event){
-        if (!isDrawing) {
-          return;
-        }
-        // get the mouse positon in relation to the canvas
-        var pos = getMousePos(canvas, event);
-        // assign x to the mouse
-        var x =  pos.x - 10;
-        // assign y to mouse
-        var y = pos.y - 10;
-        // set a radius of the drawn circles
-        var radius = 2;
-        // give it a colour
-        var fillColor = '#ff0000';
-        // call the function to draw
-        canvas.fillCircle(x, y, radius, fillColor);
-      })
-      // if the mouse is released we stop the draw
-      $("#canvas").mouseup(function(event){
-        isDrawing = false;
-      })
+      // get the mouse positon in relation to the canvas
+      var pos = getMousePos(canvas, event);
+      // assign x to the mouse
+      var x =  pos.x - 10;
+      // assign y to mouse
+      var y = pos.y - 10;
+      // set a radius of the drawn circles
+      var radius = 2;
+      // give it a colour
+      var fillColor = '#ff0000';
+      // call the function to draw
+      canvas.fillCircle(x, y, radius, fillColor);
+    })
+    // if the mouse is released we stop the draw
+    $("#canvas").mouseup(function(event){
+      isDrawing = false;
+    })
   }
   // displays the guesses from the input above in the same column
   function displayGuesses(Player) {
