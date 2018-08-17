@@ -62,7 +62,7 @@ $(function(){
       var countTimer = setInterval(function() {
         counter++;
         // changed the timer to 10 for demonstration.
-        if (counter == 10) {
+        if (counter == 20) {
           playCount--;
           $("#guess").unbind("keydown");
           startGame(Leaderboard);
@@ -222,7 +222,7 @@ $(function(){
         //remove the value after we append it to the top
         $("#guess").val("");
         // currently only using the first person on list in wait for sockets.
-        compareGuess(Player);
+        compareGuess(Player, multiplier);
       }
     })
     // set the input box to the bottom of the page
@@ -239,7 +239,7 @@ $(function(){
     // check if the word is the last one entered
     if ($(".guessParagraph:last-child").text() == drawWord.getWord()) {
       // if correct assign the player 100 points
-      Player.score += 100;
+      Player.score += 10;
       // if guess is correct assign green background
       $(".guessParagraph:last-child").css({
         backgroundColor: "green"
