@@ -10,11 +10,26 @@
     <title>Scribble.IO</title>
   </head>
   <body>
-    <section class="container-fluid">
+    <section class="container">
+        <h1>Welcome to Skribble.io</h1>
       <section class="mainMenu">
+        <button id="instructions" name="button">Instructions</button>
+        <button id="scoreBoard" name="button">Leaderboard</button>
+      </section>
+      <section class="instructions">
+        <div class="row">
+          <div class="col-md-12">
+            <p>To play, please enter the amount of players, followed by the names of each players.</p>
+            <p>Once the game starts, you will be presented with a word that you must draw for the second player to guess. you're given 1 minute each to draw/guess respectively</p>
+            <p>each correct guess will assign you a score of 100 points</p>
+          </div>
+        </div>
+      </section>
+      <section class="play">
         <div class="row">
           <div class="col-md-12">
             <form class="getPlayersForm">
+              <h5>To play the game, please enter the amount of players here</h5>
               <input id="getPlayers" type="text" name="players" placeholder="How many players">
             </form>
           </div>
@@ -45,7 +60,11 @@
         </div>
       </section>
       <section id="leaderboard">
+        <table id="localLeader">
+          <th>Name</th>
+          <th>Score</th>
 
+        </table>
       </section>
     </section>
   </body>

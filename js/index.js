@@ -1,6 +1,21 @@
 $(function(){
-
-  scroll();
+  $("#localLeader").hide();
+  $(".instructions").hide();
+  // display leaderboard on page
+  function displayLeaderboard() {
+      for (var i = 0; i < localStorage.length; i++) {
+        $("#localLeader").append("<tr> <td>"+localStorage.key(i) +"</td><td>"+localStorage.getItem(localStorage.key(i))+"</td></tr>")
+      }
+  }
+  // add an onclick for the table generator
+  $("#scoreBoard").click(function(){
+    $("#localLeader").show();
+    displayLeaderboard();
+  });
+  // add onclick for the instrucitons to show
+  $("#instruction").click(function(){
+    $(".instructions").show();
+  });
   var drawWord = new Word();
   var guessed;
   // get the current players
@@ -36,7 +51,6 @@ $(function(){
         $("#PlayerTurn").text("Player one's turn to guess")
         game(player);
         break;
-      default:
     }
     function game(player) {
       drawCanvas();
@@ -57,17 +71,28 @@ $(function(){
       // then we end current turn and go to next players turn
       var countTimer = setInterval(function() {
         counter++;
-        if (counter == 60) {
+        // changed the timer to 10 for demonstration.
+        if (counter == 10) {
           playCount--;
+          $("#guess").unbind("keydown");
           startGame(Leaderboard);
+          // unbind the guess if no guess, so we don't start several evnt listners
           // remove the timer
           clearInterval(countTimer);
         }
       }, 1000);
     }
-    localStorage.setItem(Leaderboard.getScores()[0].name, Leaderboard.getScores()[0].score);
-    localStorage.setItem(Leaderboard.getScores()[1].name, Leaderboard.getScores()[1].score);
-    $("#words").text("Game Finished");
+    // set individual players
+    var play1 = Leaderboard.getScores()[0];
+    var play2 = Leaderboard.getScores()[1];
+    // set the player score to localStorage
+    localStorage.setItem(play1.name, play1.score);
+    localStorage.setItem(play2.name, play2.score);
+    if (localStorage.getItem(play1.name)>localStorage.getItem(play2.name)) {
+      $("#words").text(""+play1.name + " - wins the game");
+    }else{
+      $("#words").text(""+ play2.name + " -  wins the game");
+    }
     }
   // function to retrieve the values from inputs
   function askPlayerAmount() {
@@ -122,17 +147,10 @@ $(function(){
       leaderboard.addEntry(person);
     });
     // call leaderboard to be displayed
-    displayLeaderboard(leaderboard);
+
     startGame(leaderboard);
-    $(".mainMenu").hide();
+    $(".play").hide();
     $(".game").show();
-  }
-  // display leaderboard on page
-  function displayLeaderboard(leaderboard) {
-    $(".leaderboard").append("<ul id='leaderboard'></ul>");
-    for (var i = 0; i < leaderboard.getScores().length; i++) {
-      $("#leaderboard").append("<li id="+leaderboard.getScores()[i].getName()+">"+leaderboard.getScores()[i].getName() +  "|"+leaderboard.getScores()[i].getScore()+"</li>")
-    }
   }
   // displays the word on page//sets the objct word
   function displayWord() {
@@ -209,6 +227,8 @@ $(function(){
     $("#guess").on("keydown",function(event){
       if (event.keyCode == 13){
         $(".guesses").append("<p class='guessParagraph'>"+$("#guess").val()+"</p>");
+        //remove the value after we append it to the top
+        $("#guess").val("");
         // currently only using the first person on list in wait for sockets.
         compareGuess(Player);
       }
@@ -221,17 +241,6 @@ $(function(){
     $(".guessForm").on("submit",function(event){
       event.preventDefault();
     })
-  }
-  // add scroll animation to scroll to last item
-  function scroll() {
-    var i = 0;
-    var interval = setInterval(function () {
-      i += 4; // speed
-      $('.guesses').animate({ scrollTop: i }, 1);
-      if (i >= $('#guesses').prop('scrollHeight') - $('#guesses').height()) {
-        i = 0;
-      }
-    }, 100);
   }
   // compare a guess from a player and the word on screen
   function compareGuess(Player) {
