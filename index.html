@@ -10,11 +10,57 @@
     <title>Scribble.IO</title>
   </head>
   <body>
-    <section class="container-fluid">
+    <section class="container">
+      <h1>Welcome to Skribble.io</h1>
       <section class="mainMenu">
+        <button type="button"  data-toggle="modal" data-target="#myModal">Instructions</button>
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Instructions</h4>
+              </div>
+              <div class="modal-body">
+                <p>To play, please enter the amount of players, followed by the names of each players.</p>
+                <p>Once the game starts, you will be presented with a word that you must draw for the second player to guess. you're given 1 minute each to draw/guess respectively</p>
+                <p>each correct guess will assign you a score of 100 points</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button type="button"  data-toggle="modal" data-target="#myLeaderboard">Leaderboard</button>
+        <div class="modal fade" id="myLeaderboard" tabindex="-1" role="dialog" aria-labelledby="myLeaderboardLabel">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title" id="myLeaderboardLabel">Leaderboard</h3>
+              </div>
+              <div class="modal-body">
+                <section id="leaderboard">
+                  <table id="localLeader">
+                    <th>Name</th>
+                    <th>Score</th>
+                  </table>
+                </section>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+        <!-- Button trigger modal -->
+      <section class="play">
         <div class="row">
           <div class="col-md-12">
             <form class="getPlayersForm">
+              <h5>To play the game, please enter the amount of players here</h5>
               <input id="getPlayers" type="text" name="players" placeholder="How many players">
             </form>
           </div>
@@ -26,6 +72,7 @@
           </div>
           <div class="col-md-6">
             <p id="words"></p>
+            <p id=PlayerTurn></p>
           </div>
         </div>
         <div class="row">

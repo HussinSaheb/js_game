@@ -1,15 +1,90 @@
 $(function(){
+  displayLeaderboard();
+  // display leaderboard on page
+  function displayLeaderboard() {
+    for (var i = 0; i < localStorage.length; i++) {
+      $("#localLeader").append("<tr> <td>"+localStorage.key(i) +"</td><td>"+localStorage.getItem(localStorage.key(i))+"</td></tr>")
+    }
+  }
   var drawWord = new Word();
+  var guessed;
+  // get the current players
+  var playCount = 4;
   // hide the game div at start
   $(".game").hide();
-  startGame();
+  // call the functon to gather player details
+  askPlayerAmount();
+  // initialise the leaderoard
   var leaderboard = new Leaderboard();
   // start a game
-  function startGame() {
-    askPlayerAmount();
-    displayGuesses();
-    displayWord();
-    drawCanvas();
+  function startGame(Leaderboard) {
+    var player;
+    switch (playCount) {
+      case 1:
+        player = Leaderboard.getScores()[1];
+        $("#PlayerTurn").text("Player two's turn to guess");
+        // call game function with the player object passed as argument.
+        game(player);
+      break;
+      case 2:
+        player = Leaderboard.getScores()[0];
+        $("#PlayerTurn").text("Player one's turn to guess");
+        game(player);
+      break;
+      case 3:
+        player = Leaderboard.getScores()[1];
+        $("#PlayerTurn").text("Player two's turn to guess");
+        game(player);
+      break;
+      case 4:
+        player = Leaderboard.getScores()[0];
+        $("#PlayerTurn").text("Player one's turn to guess");
+        game(player);
+      break;
+    }
+    function game(player) {
+      drawCanvas();
+      displayWord(true);
+      displayGuesses(player)
+      var counter = 0;
+      //stat timer to replace the word with underscores
+      var wordTimer = setInterval(function() {
+        counter++;
+        if (counter == 5) {
+          replaceWord();
+          // remove the timer
+          clearInterval(wordTimer);
+        }
+      }, 1000);
+      // if no correct guesses
+      // and the time is past a minute
+      // then we end current turn and go to next players turn
+      var countTimer = setInterval(function() {
+        counter++;
+        // changed the timer to 10 for demonstration.
+        if (counter == 20) {
+          playCount--;
+          $("#guess").unbind("keydown");
+          startGame(Leaderboard);
+          // unbind the guess if no guess, so we don't start several evnt listners
+          // remove the timer
+          clearInterval(countTimer);
+        }
+      }, 1000);
+    }
+    // set individual players
+    var play1 = Leaderboard.getScores()[0];
+    var play2 = Leaderboard.getScores()[1];
+    // set the player score to localStorage
+    localStorage.setItem(play1.name, play1.score);
+    localStorage.setItem(play2.name, play2.score);
+    if (localStorage.getItem(play1.name)>localStorage.getItem(play2.name)) {
+      $("#words").text(""+play1.name + " - wins the game");
+    }else{
+      $("#words").text(""+ play2.name + " -  wins the game");
+    }
+    //update the leaderboard as the scores update
+    displayLeaderboard();
   }
   // function to retrieve the values from inputs
   function askPlayerAmount() {
@@ -39,9 +114,9 @@ $(function(){
           $(".playerName").each(function(index){
             // add them to an array
             playerArray[index]= $(this).val();
-          });
+          })
           addPlayers(numberOfPlayers, playerArray);
-        });
+        })
       }
     });
   }
@@ -58,20 +133,16 @@ $(function(){
       var person =  new Player(playerNames[index], 0);
       // display in the window the players name.
       $(this).text(playerNames[index]);
+      // add an id of the name
+      $(this).attr('id',playerNames[index]);
       // add the new player to the leaderboard
       leaderboard.addEntry(person);
-    })
+    });
     // call leaderboard to be displayed
-    displayLeaderboard(leaderboard);
-    $(".mainMenu").hide();
+
+    startGame(leaderboard);
+    $(".play").hide();
     $(".game").show();
-  }
-  // display leaderboard on page
-  function displayLeaderboard(leaderboard) {
-    $(".leaderboard").append("<ul id='leaderboard'></ul>");
-    for (var i = 0; i < leaderboard.getScores().length; i++) {
-      $("#leaderboard").append("<li id="+leaderboard.getScores()[i].getName()+">"+leaderboard.getScores()[i].getName() +  "|"+leaderboard.getScores()[i].getScore()+"</li>");
-    }
   }
   // displays the word on page//sets the objct word
   function displayWord() {
@@ -79,15 +150,29 @@ $(function(){
     $.get("https://api.datamuse.com/words?ml=&max=999&topics=furniture", function(result){
       // get a random number
       var number  = Math.floor(Math.random() * 30);
-      // set the number to pick one from 999 words
-      $("#words").text(result[number].word);
+      var theWord = result[number].word;
       // set the word to word object
       drawWord.setWord(result[number].word);
-    });
+      $("#words").text(theWord);
+    })
+  }
+  // function to replace the word displayed with underscores to guess
+  function replaceWord() {
+    var theWord = $("#words").text();
+    var temp ="";
+    // loop over the word, replace the words letters with underscore
+    for (var i = 0; i < theWord.length; i++) {
+      temp += theWord[i].replace(theWord.charAt(i), "_ ");
+    }
+    $("#words").text(temp);
   }
   // function to show and deal with the canvas inputs
+  // set param turn to true if current players turns
+  // pass the player object if its their turn
   function drawCanvas() {
     var canvas = $("#canvas")[0].getContext('2d');
+    // clears the canvas each time the draw canvas is called.
+    canvas.clearRect(0,0,$("#canvas")[0].width, $("#canvas")[0].height);
     // used to check if the mouse has been pressed or not
     var isDrawing;
     canvas.fillCircle = function(x, y, radius, fillColor) {
@@ -105,7 +190,7 @@ $(function(){
     // if the mouse is pressed we draw
     $("#canvas").mousedown(function(event){
       isDrawing = true;
-    });
+    })
     //draw from the press to the nd
     $("#canvas").mousemove(function(event){
       if (!isDrawing) {
@@ -114,58 +199,69 @@ $(function(){
       // get the mouse positon in relation to the canvas
       var pos = getMousePos(canvas, event);
       // assign x to the mouse
-      var x =  pos.x;
+      var x =  pos.x - 10;
       // assign y to mouse
-      var y = pos.y;
+      var y = pos.y - 10;
       // set a radius of the drawn circles
-      var radius = 1;
+      var radius = 2;
       // give it a colour
       var fillColor = '#ff0000';
       // call the function to draw
       canvas.fillCircle(x, y, radius, fillColor);
-    });
+    })
     // if the mouse is released we stop the draw
     $("#canvas").mouseup(function(event){
       isDrawing = false;
-    });
+    })
   }
   // displays the guesses from the input above in the same column
-  function displayGuesses() {
+  function displayGuesses(Player) {
     $("#guess").on("keydown",function(event){
       if (event.keyCode == 13){
         $(".guesses").append("<p class='guessParagraph'>"+$("#guess").val()+"</p>");
+        //remove the value after we append it to the top
+        $("#guess").val("");
         // currently only using the first person on list in wait for sockets.
-        compareGuess(leaderboard.getScores()[0]);
+        compareGuess(Player, multiplier);
       }
-    });
+    })
     // set the input box to the bottom of the page
     $("#guess").css({
       position:"relative",
       bottom:"0"
-    });
+    })
     $(".guessForm").on("submit",function(event){
       event.preventDefault();
-    });
+    })
   }
   // compare a guess from a player and the word on screen
   function compareGuess(Player) {
-        // check if the word is the last one entered
-        if ($(".guessParagraph:last-child").text() == drawWord.getWord()) {
-          // if correct assign the player 100 points
-          Player.score += 100;
-          // if guess is correct assign green background
-          $(".guessParagraph:last-child").css({
-            backgroundColor: "green"
-          });
-          // call to updte the leaderboard
-          updateScoreBoard(Player);
-        }else{
-          // iff guess is wrong assign red background
-          $(".guessParagraph:last-child").css({
-            backgroundColor: "red"
-          })
-        }
+    // check if the word is the last one entered
+    if ($(".guessParagraph:last-child").text() == drawWord.getWord()) {
+      // if correct assign the player 100 points
+      Player.score += 10;
+      // if guess is correct assign green background
+      $(".guessParagraph:last-child").css({
+        backgroundColor: "green"
+      })
+      // call to updte the leaderboard
+      updateScoreBoard(Player);
+      guessed = true;
+      $("#guess").unbind("keydown");
+      if (guessed) {
+        // reduce the playCount
+        playCount--;
+        startGame(leaderboard);
       }
+    }else{
+      // if guess is wrong assign red background
+      $(".guessParagraph:last-child").css({
+        backgroundColor: "red"
+      })
+      guessed=false;
+    }
+
+  }
   // update score board
   function updateScoreBoard(Player) {
     $("#"+Player.getName()+"").text(""+Player.getName()+ "|" + Player.getScore());

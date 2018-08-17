@@ -1,25 +1,35 @@
-
-getPlayersForm{
-  height: auto;
-  border: 1px solid black;
-  border-radius: 3px;
+body{
+  background-color: lightgrey;
+}
+.getPlayersForm{
+  height: 200px;
+  margin-left: auto;
+  margin-top:20%;
+  display: block;
 }
 .playerDisplay{
   border-radius: 3px;
   border: 1px solid black;
 }
 #canvas{
-  height: 500px;
+  height: 540px;
   width: 500px;
   border-radius: 3px;
   border: 1px solid black;
+  background-color: white;
 }
 .guesses{
   border-radius: 3px;
   border: 1px solid black;
+  overflow-y:auto;
+  height: 510px;
 }
 .player{
   border: 1px solid black;
   border-radius: 3px;
   text-align: center;
+}
+#localLeader th, tr, td{
+  border: 1px solid black;
+  font-size: 32px;
 }
