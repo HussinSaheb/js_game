@@ -3,7 +3,7 @@ $(function(){
   // display leaderboard on page
   function displayLeaderboard() {
     for (var i = 0; i < localStorage.length; i++) {
-      $("#localLeader").append("<tr> <td>"+localStorage.key(i) +"</td><td>"+localStorage.getItem(localStorage.key(i))+"</td></tr>")
+      $("#localLeader").append("<tr><td>"+localStorage.key(i) +"</td><td>"+localStorage.getItem(localStorage.key(i))+"</td></tr>")
     }
   }
   var drawWord = new Word();
@@ -76,12 +76,14 @@ $(function(){
     var play1 = Leaderboard.getScores()[0];
     var play2 = Leaderboard.getScores()[1];
     // set the player score to localStorage
-    localStorage.setItem(play1.name, play1.score);
-    localStorage.setItem(play2.name, play2.score);
-    if (localStorage.getItem(play1.name)>localStorage.getItem(play2.name)) {
+    if (play1.score>play2.score) {
       $("#words").text(""+play1.name + " - wins the game");
+      localStorage.setItem(play1.name, play1.score);
+      localStorage.setItem(play2.name, play2.score);
     }else{
       $("#words").text(""+ play2.name + " -  wins the game");
+      localStorage.setItem(play1.name, play1.score);
+      localStorage.setItem(play2.name, play2.score);
     }
     //update the leaderboard as the scores update
     displayLeaderboard();
@@ -204,7 +206,7 @@ $(function(){
         //remove the value after we append it to the top
         $("#guess").val("");
         // currently only using the first person on list in wait for sockets.
-        compareGuess(Player, multiplier);
+        compareGuess(Player);
       }
     })
     // set the input box to the bottom of the page
