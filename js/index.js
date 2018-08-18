@@ -170,49 +170,74 @@ $(function(){
   // set param turn to true if current players turns
   // pass the player object if its their turn
   function drawCanvas() {
-    var canvas = $("#canvas")[0].getContext('2d');
-    // clears the canvas each time the draw canvas is called.
-    canvas.clearRect(0,0,$("#canvas")[0].width, $("#canvas")[0].height);
-    // used to check if the mouse has been pressed or not
-    var isDrawing;
-    canvas.fillCircle = function(x, y, radius, fillColor) {
-      this.fillStyle = fillColor;
-      this.beginPath();
-      this.moveTo(x, y);
-      this.arc(x, y, radius, 0, Math.PI * 2, false);
-      this.fill();
-    };
-    // compares the canvas
-    function getMousePos(canvas, e) {
-      var rect =  $("#canvas")[0].getBoundingClientRect();
-      return {x: e.clientX - rect.left, y: e.clientY - rect.top};
-    }
-    // if the mouse is pressed we draw
-    $("#canvas").mousedown(function(event){
-      isDrawing = true;
-    })
-    //draw from the press to the nd
-    $("#canvas").mousemove(function(event){
-      if (!isDrawing) {
-        return;
+    // remove the canvas from the game
+    $("#canvas").remove();
+    // add a new div to recreate the canvas back into when
+    // drawcanvas is called each time
+    $(".canvas").append("<div id='canvas'></div>")
+    // initialise a sketch function
+    var sketch = function(canvas){
+      // create the setup function from p5
+      canvas.setup = function(){
+        canvas.createCanvas(500,500);
+        canvas.background('white');
       }
-      // get the mouse positon in relation to the canvas
-      var pos = getMousePos(canvas, event);
-      // assign x to the mouse
-      var x =  pos.x - 10;
-      // assign y to mouse
-      var y = pos.y - 10;
-      // set a radius of the drawn circles
-      var radius = 2;
-      // give it a colour
-      var fillColor = '#ff0000';
-      // call the function to draw
-      canvas.fillCircle(x, y, radius, fillColor);
-    })
-    // if the mouse is released we stop the draw
-    $("#canvas").mouseup(function(event){
-      isDrawing = false;
-    })
+
+      // set the mouse dragged function
+      canvas.mouseDragged = function(){
+        // set th fill colour to black
+        canvas.fill(30);
+        // set the stroke to black
+        canvas.stroke(30);
+        // add circle/ellipse at the mouses locaton with 10 radius
+        canvas.ellipse(canvas.mouseX,canvas.mouseY, 10,10);
+      }
+    }
+    // create a new p5 object to display the canvas.
+    new p5(sketch, document.getElementById('canvas'));
+    // var canvas = $("#canvas")[0].getContext('2d');
+    // // clears the canvas each time the draw canvas is called.
+    // canvas.clearRect(0,0,$("#canvas")[0].width, $("#canvas")[0].height);
+    // // used to check if the mouse has been pressed or not
+    // var isDrawing;
+    // canvas.fillCircle = function(x, y, radius, fillColor) {
+    //   this.fillStyle = fillColor;
+    //   this.beginPath();
+    //   this.moveTo(x, y);
+    //   this.arc(x, y, radius, 0, Math.PI * 2, false);
+    //   this.fill();
+    // };
+    // // compares the canvas
+    // function getMousePos(canvas, e) {
+    //   var rect =  $("#canvas")[0].getBoundingClientRect();
+    //   return {x: e.clientX - rect.left, y: e.clientY - rect.top};
+    // }
+    // // if the mouse is pressed we draw
+    // $("#canvas").mousedown(function(event){
+    //   isDrawing = true;
+    // })
+    // //draw from the press to the nd
+    // $("#canvas").mousemove(function(event){
+    //   if (!isDrawing) {
+    //     return;
+    //   }
+    //   // get the mouse positon in relation to the canvas
+    //   var pos = getMousePos(canvas, event);
+    //   // assign x to the mouse
+    //   var x =  pos.x - 10;
+    //   // assign y to mouse
+    //   var y = pos.y - 10;
+    //   // set a radius of the drawn circles
+    //   var radius = 2;
+    //   // give it a colour
+    //   var fillColor = '#ff0000';
+    //   // call the function to draw
+    //   canvas.fillCircle(x, y, radius, fillColor);
+    // })
+    // // if the mouse is released we stop the draw
+    // $("#canvas").mouseup(function(event){
+    //   isDrawing = false;
+    // })
   }
   // displays the guesses from the input above in the same column
   function displayGuesses(Player) {

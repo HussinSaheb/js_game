@@ -7,17 +7,7 @@ body{
   margin-top:20%;
   display: block;
 }
-.playerDisplay{
-  border-radius: 3px;
-  border: 1px solid black;
-}
-#canvas{
-  height: 540px;
-  width: 500px;
-  border-radius: 3px;
-  border: 1px solid black;
-  background-color: white;
-}
+
 .guesses{
   border-radius: 3px;
   border: 1px solid black;
