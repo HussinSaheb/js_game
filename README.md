@@ -10,7 +10,9 @@ Skribbl is a game that's played by two or more players. One of the players will 
 
 ## Implementation
 ### Languages used
-* HTML ,CSS
+* HTML
+* CSS
+  * Bootstrap 3.3.7
 * JavaScript
   * jQuery
   * Ajax
