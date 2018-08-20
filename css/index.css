@@ -1,5 +1,6 @@
 body{
   background-color: lightgrey;
+  font-size: 14px
 }
 h1{
   display: flex;
@@ -27,8 +28,26 @@ h1::after,h1::before{
 .player{
   border-radius: 3px;
   text-align: center;
+  display: flex;
+}
+.player::before{
+  content:"";
+  height: 20px;
+  width: 20px;
+  margin: 3px;
+  background-image: url('../images/user.svg');
 }
 
+#guess{
+  width: 100%;
+}
+input:placeholder{
+  text-align: center;
+}
+input:placeholder-shown{
+  border: 2px solid red;
+  color: green;
+}
 #localLeader th, tr, td{
   border: 1px solid black;
   font-size: 32px;

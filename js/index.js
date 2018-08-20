@@ -1,5 +1,4 @@
 $(function(){
-  displayLeaderboard();
   // display leaderboard on page
   function displayLeaderboard() {
     for (var i = 0; i < localStorage.length; i++) {
@@ -80,13 +79,16 @@ $(function(){
       $("#words").text(""+play1.name + " - wins the game");
       localStorage.setItem(play1.name, play1.score);
       localStorage.setItem(play2.name, play2.score);
+      //update the leaderboard as the scores update
+      displayLeaderboard();
     }else{
       $("#words").text(""+ play2.name + " -  wins the game");
       localStorage.setItem(play1.name, play1.score);
       localStorage.setItem(play2.name, play2.score);
+      //update the leaderboard as the scores update
+      displayLeaderboard();
     }
-    //update the leaderboard as the scores update
-    displayLeaderboard();
+
   }
   // function to retrieve the values from inputs
   function askPlayerAmount() {
@@ -183,6 +185,7 @@ $(function(){
       canvas.setup = function(){
         canvas.createCanvas(500,500);
         canvas.background('white');
+        canvas.radius=0;
       }
 
       // set the mouse dragged function
